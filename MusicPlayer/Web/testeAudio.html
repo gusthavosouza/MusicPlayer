@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Audio Teste 1.0</title>
+
+<style type="text/css">
+.playStyle {
+	display: inline-block; width : 40px;
+	height: 40px;
+	width: 40px; height : 40px;
+	background: url(play.png) no-repeat;
+}
+
+.pauseStyle {
+	display: inline-block;
+	width: 40px;
+	height: 40px;
+	background: url(pause.png) no-repeat;
+}
+
+.controlStyle{
+
+}
+
+.infosStye{
+position: absolute;
+left: 200px;
+top: 20px;
+}
+
+.playerStyle{
+border-radius:15px;
+box-shadow:5px 5px 5px #808080 ;
+background:linear-gradient(to bottom right,#282828,#686868);
+width: 400px; 
+height: 200px;"
+
+}
+.albumStyle {
+border-radius:20px;
+box-shadow: 5px 5px 5px #585858;
+width: 100px;
+height: 100px;
+left: 20px;
+top: 20px;
+position: relative;
+}
+
+.volumeVert {
+top:10px;
+position:absolute;
+transform:rotate(-90deg);
+-ms-transform:rotate(-90deg); /* IE 9 */
+-webkit-transform:rotate(-90deg); /* Opera, Chrome, and Safari */
+}
+
+input[type=range]{
+-webkit-appearance: none; /* WebKit */
+opacity:0.8;
+height:10px;
+border-radius:10px; 
+display: none;
+}
+input[type=range]::-webkit-slider-runnable-track {
+    width: 300px;
+    height: 5px;
+    border: none;
+    border-radius: 3px;
+}
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    border: none;
+    height: 16px;
+    width: 20px;
+    border-radius: 50%;
+    background: #808080;
+    margin-top: -4px;
+}
+
+.volumeStyle {
+position: absolute;
+top: 70px;
+left: 300px;
+}
+
+.playDivStyle {
+top:150px;
+position: absolute;
+}
+</style>
+</head>
+
+<script type="text/javascript" src="binaryajax.js" ></script>
+<script type="text/javascript" src="id3.js" ></script>
+
+<script type="text/javascript">
+
+	myVar;
+	function forward() {
+
+		var musica = document.getElementById('mediaPlayer');
+		musica.currentTime += 1.0;
+		myVar = setTimeout(forward, 100);
+
+	}
+
+	function previous() {
+
+		var musica = document.getElementById('mediaPlayer');
+		musica.currentTime -= 1.0;
+		myVar = setTimeout(previous, 100);
+	}
+
+	function clearForward() {
+		clearTimeout(myVar);
+	}
+
+	function playButton() {
+		var musica = document.getElementById('mediaPlayer');
+		musica.play();
+		document.getElementById('playBut').style.display = "none";
+		document.getElementById('pauseBut').style.display = "inline-block";
+
+	}
+
+	function pauseButton() {
+		var musica = document.getElementById('mediaPlayer');
+		musica.pause();
+		document.getElementById('pauseBut').style.display = "none";
+		document.getElementById('playBut').style.display = "inline-block";
+	}
+
+	function volumeMus(volumeValue) {
+		var musica = document.getElementById('mediaPlayer');
+		musica.volume = volumeValue;
+		document.getElementById('volumeRange').style.display = "none";
+		//var alturaVolume = document.getElementById('volumeNum');
+		//alturaVolume.innerHTML = musica.volume * 100;
+	}
+	
+	function changeVolume(){
+		document.getElementById('volumeRange').style.display = "block";
+	}
+	
+</script>
+
+<body>
+	<div id="audioPlayer">
+	
+		<div id="fundoPlayer" class="playerStyle">
+		
+		<div id="imagemMusica" >
+		<img alt="" src="album.jpg" class="albumStyle">
+		</div>
+		
+		<div id="infos" class="infosStye">
+				<table>
+					<tr>
+						<td><output id="name">Name: </output></td>
+						<td><output id="name">Desire</output></td>
+					</tr>
+					
+					<tr>
+						<td><output id="artist">Artist: </output></td>
+						<td><output id="artist"> Ozzy</output></td>
+						
+					</tr>
+					
+					<tr>
+						<td><output id="Album:">Album: </output></td>
+						<td><output id="Album:"> Best</output></td>
+					</tr>
+					
+					<tr>
+						<td><output id="year">Year: </output></td>
+							<td><output id="year"> 1991</output></td>
+					</tr>
+					
+					<tr>
+						<td><output id="genre">Genre: </output></td>
+							<td><output id="genre"> Rock</output></td>
+					</tr>
+				</table>
+
+			</div>
+		
+			<audio id="mediaPlayer" style="width: 300px; height: 50px;">
+				<source src="Desire.mp3">
+			</audio>
+
+		<div id="controlsPlayer">
+
+				<div id="playDiv" class="playDivStyle">
+					<table>
+						<tr>
+							<td>
+								 <img id="playBut" src="play.png"
+								onclick="playButton();"
+								style="width: 40px; height: 40px; cursor: pointer;" /> 
+								
+								<img
+								id="pauseBut" src="pause.png" onclick="pauseButton();"
+								style="width: 40px; height: 40px; cursor: pointer; display: none;" />
+								<input type="range"  id="slider-3" 
+								 min="0" value="0" style="display:inline-block;" > 
+							</td>
+							<td><img alt="Forward" src="previous.png"
+								onmousedown="previous();" onmouseup="clearForward();"
+								style="width: 30px; height: 30px; cursor: pointer;"
+								title="Previous"> <img alt="Forward" src="forward.png"
+								onmousedown="forward();" onmouseup="clearForward();"
+								style="width: 30px; height: 30px; cursor: pointer;"
+								title="Forward"></td>
+						</tr>
+					</table>
+				</div>
+
+				<div id="volumeDiv" class="volumeStyle">
+			
+			<input type="range" max="1" min="0"	step="0.01" value="1" id="volumeRange" class="volumeVert"
+					onchange="volumeMus(this.value);" >
+					<img alt="" src="volume.png" style="display:block;left:50px;top:90px;position: absolute;cursor: pointer;" onclick="changeVolume();" >
+			</div>
+
+		
+
+		</div>
+	</div>
+	</div>
+
+</body>
+</html>
