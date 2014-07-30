@@ -29,7 +29,11 @@
 			});
 			$("#amount").val($("#slider").slider("value"));
 		});
-
+		
+		$(function() {
+		    $( "#sliderMusica" ).slider();
+		  });
+		
 	myVar;
 
 	function forward() {
@@ -56,7 +60,9 @@
 		musica.play();
 		document.getElementById('playBut').style.display = "none";
 		document.getElementById('pauseBut').style.display = "inline-block";
-
+		
+		document.getElementById('inicio').innerHTML = musica.seekable.start(0);
+		document.getElementById('fim').innerHTML = musica.seekable.end(0);
 	}
 
 	function pauseButton() {
@@ -120,7 +126,7 @@
 			</div>
 
 			<audio id="mediaPlayer" style="width: 300px; height: 50px;">
-				<source src="Desire.mp3">
+				<source src="music/Desire.mp3" id="musicaSource">
 			</audio>
 
 			<div id="controlsPlayer">
@@ -130,10 +136,12 @@
 						<tr>
 							<td><img id="playBut" src="images/play.png" onclick="playButton();"
 								style="width: 40px; height: 40px; cursor: pointer;" /> <img
-								id="pauseBut" src="pause.png" onclick="pauseButton();"
+								id="pauseBut" src="images/pause.png" onclick="pauseButton();"
 								style="width: 40px; height: 40px; cursor: pointer; display: none;" />
-
-
+								
+								<output id="inicio">0:00</output>
+								<div id="sliderMusica" style="display: block; ;"></div>
+								<output id="fim">0:00</output>
 
 							</td>
 							<td><img alt="Forward" src="images/previous.png"
@@ -160,13 +168,11 @@
 			</div>
 		</div>
 	</div>
+	
 	<p>
 		<label for="amount">Volume:</label> <input type="text" id="amount"
 			readonly style="border: 0; color: #383838; font-weight: bold;">
 	</p>
-
 	<div id="slider" style="height: 200px;"></div>
-
-
 </body>
 </html>
