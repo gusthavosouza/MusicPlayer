@@ -120,9 +120,14 @@
 				style="width: 3px; position: absolute; top: 20px; left: 125px;">
 			</span>
 		</div>
+		<div id="chooseButton" style="position: relative; top: 40px;">
+			<img src="images/choose.png" style="width: 50px; height: 50px; padding: 10px; cursor: pointer;" onclick="document.getElementById('file').click();" >
+				<input type="file" id="file" style="display: none;" onchange="loadFile(this);" >
+			 </div>
 		<div id="playerControl"
 			style="width: 450px; height: 40px; background: black; position: relative; top: 100px;">
-			<input type="file" id="file" onchange="loadFile(this);">
+			
+		
 			<button id="playButton" onclick="efeitoMusic();">Play</button>
 			<button id="pauseButton" onclick="clearTempo();">Pause</button>
 			
