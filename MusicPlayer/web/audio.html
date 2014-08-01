@@ -36,9 +36,9 @@
 		var x = Math.floor((Math.random() * 80) + 1);
 		var d = Math.floor((Math.random() * 13) + 1);
 		document.getElementById('efe' + d).style.height = x + "px";
-		var a = Math.floor((Math.random() * 255) + 1);
-		var b = Math.floor((Math.random() * 255) + 1);
-		var c = Math.floor((Math.random() * 255) + 1);
+	//	var a = Math.floor((Math.random() * 255) + 1);
+		//var b = Math.floor((Math.random() * 255) + 1);
+		//var c = Math.floor((Math.random() * 255) + 1);
 		//document.getElementById('efe'+d).style.backgroundColor = 'rgb(' +a +','+b+','+c+')';
 		tempo = setTimeout(efeitoMusic, 10);
 	}
@@ -57,23 +57,73 @@
 	        tags: ["title","artist","album","picture"],
 	        dataReader: FileAPIReader(file)
 	      });
+	      
+	  	alert(file.name);
+	      createAudio(input);
 	    }
 	
+	
+	function createAudio(file) {
+	
+		var sound = document.getElementById('playerAudio');
+		sound.src = URL.createObjectURL(document.getElementsByTagName('input')[0].files[0]);
+		//sound.src = urlSou;
+		
+		//sound.setAttribute('scr', file.files[0]);
+	}
+	
 	function showTags(url) {
+		
 	      var tags = ID3.getAllTags(url);
 	      document.getElementById('title').textContent = tags.title || "";
 	      document.getElementById('artist').textContent = tags.artist || "";
 	      document.getElementById('album').textContent = tags.album || "";
+	      
+	      var image = tags.picture;
+	      if (image) {
+	        var base64String = "";
+	        for (var i = 0; i < image.data.length; i++) {
+	            base64String += String.fromCharCode(image.data[i]);
+	        }
+	        var base64 = "data:" + image.format + ";base64," +
+	                window.btoa(base64String);
+	        document.getElementById('picture').setAttribute('src',base64);
+	      
+ 	      } else {
+	        document.getElementById('picture').src = "images/album.jpg";
+ 	      }
+	      
 	    }
+	
+	function playAudio(){
+		
+		var music = document.getElementById('playerAudio');
+		
+		music.play();
+		
+		efeitoMusic();
+	}
+	
+	function pauseAudio(){
+		
+		var music = document.getElementById('playerAudio');
+		
+		music.pause();
+		
+		clearTempo();
+	}
+	
 
 </script>
 </head>
 <body>
 	<div id="playerFundo" class="fundoStyle"
 		style="width: 450px; height: 250px; border-radius: 10px;">
-		<div id="player"></div>
-		<div id="imageMusic"
-			style="width: 150px; height: 150px; background: white; top: 30px; position: relative; left: 30px;"></div>
+		<div id="player">
+		<audio  id="playerAudio" >
+		</audio>
+		</div>
+			<img alt="" id="picture" src="images/album.jpg" style="width: 150px; height: 150px; background: white; top: 30px; position: relative; left: 30px; border-radius:5px;">
 		<div id="infos" style="position: absolute; top: 10px; left: 200px;">
 			<table>
 				<tr>
@@ -128,8 +178,8 @@
 			style="width: 450px; height: 40px; background: black; position: relative; top: 100px;">
 			
 		
-			<button id="playButton" onclick="efeitoMusic();">Play</button>
-			<button id="pauseButton" onclick="clearTempo();">Pause</button>
+			<button id="playButton" onclick="playAudio();">Play</button>
+			<button id="pauseButton" onclick="pauseAudio();">Pause</button>
 			
 			<input id="timeMusic" type="range">
 			<output id="volume" style="color: white;">Volume</output>
