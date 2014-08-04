@@ -67,22 +67,37 @@
 		
 		var sound = document.getElementById('playerAudio');
 		sound.src =  audio;
-		
 	}
 	
 	function createAudio(file) {
 
-		var playList = document.getElementById('playList');
+		var playList = document.getElementById('playListTable');
+		
 		for(var a = 0; a < file.files.length; a ++){
-			var music = document.createElement("BUTTON");
-			var name = document.createTextNode(file.files[a].name);
-			var obj =  URL.createObjectURL(file.files[a]);
-			music.appendChild(name);
-			music.setAttribute('value', obj);
-			music.setAttribute('onclick', 'setAudio(this.value)');
-			music.style.cursor = "pointer";
-			playList.appendChild(music);
 			
+			var tr = document.createElement('tr');
+			
+			var td = document.createElement('td');
+				
+			var music = document.createElement("a");
+			
+			var name = document.createTextNode(file.files[a].name);
+			
+			var obj =  URL.createObjectURL(file.files[a]);
+			
+			music.appendChild(name);
+			
+			music.setAttribute('hreflang', obj);
+			
+		
+			
+			//link.appendChild(img);
+			//img.setAttribute('value', obj);
+			music.setAttribute('onclick', 'setAudio(this.hreflang)');
+			music.style.cursor = "pointer";
+			td.appendChild(music);
+			tr.appendChild(td);
+			playList.appendChild(tr);
 		}
 	}
 
@@ -204,7 +219,7 @@
 		</div>
 	</div>
 	<div id="playList" style="width: 300px; height: 300px; padding: 150px;">
-		<var></var>
+	<table  id="playListTable"></table>
 	</div>
 
 </body>
