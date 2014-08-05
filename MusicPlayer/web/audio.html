@@ -26,6 +26,24 @@
 	background: rgb(0, 0, 0);
 	height: 1px;
 }
+.imgSty {
+width: 60px;
+height: 60px;
+border-radius: 5%;
+}
+
+.musicStyle {
+display: inline-block;
+width: auto;
+max-width: 120px;
+font-size: 14px;
+font-weight: bold;
+text-overflow: ellipsis;
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+}
+
 </style>
 <script src="jquery/jquery-1.11.1.js"></script>
 <script src="dist/id3-minimized.js" type="text/javascript"></script>
@@ -48,62 +66,93 @@
 	}
 
 	function loadFile(input) {
-		var file = input.files[0], url = file.urn || file.name;
-
+		
+		for(var x = 0; x < input.files.length; x++){
+			
+		var file = input.files[x], url = file.urn || file.name;
+		
+		var imgSrc = document.createElement('img');
+		
 		ID3.loadTags(url, function() {
-			showTags(url);
+			
+			var tags = ID3.getAllTags(url);
+			
+			document.getElementById('title').textContent = tags.title || "";
+			document.getElementById('artist').textContent = tags.artist || "";
+			document.getElementById('album').textContent = tags.album || "";
+
+			var image = tags.picture;
+			
+			if (image) {
+				var base64String = "";
+				for (var i = 0; i < image.data.length; i++) {
+					base64String += String.fromCharCode(image.data[i]);
+				}
+				var base64 = "data:" + image.format + ";base64,"
+						+ window.btoa(base64String);
+				
+				document.getElementById('picture').setAttribute('src', base64);
+				
+				imgSrc.src = base64;
+
+			} else {
+				
+				imgSrc.src =  "images/album.jpg"; 
+				
+				document.getElementById('picture').src = "images/album.jpg";
+			}
 		}, {
 			tags : [ "title", "artist", "album", "picture" ],
 			dataReader : FileAPIReader(file)
 		});
 		
-		var sound = document.getElementById('playerAudio');
-		sound.src = URL.createObjectURL(file);
+		createAudio(input.files[x],imgSrc);
+		}
 		
-		createAudio(input);
 	}
 	
 	function setAudio(audio){
 		
 		var sound = document.getElementById('playerAudio');
 		sound.src =  audio;
+		
 	}
 	
-	function createAudio(file) {
+	function createAudio(file,imgSrc) {
 
 		var playList = document.getElementById('playListTable');
 		
-		for(var a = 0; a < file.files.length; a ++){
-			
 			var tr = document.createElement('tr');
 			
 			var td = document.createElement('td');
-				
+			
+			var tdImg = document.createElement('td');
+			
 			var music = document.createElement("a");
 			
-			var name = document.createTextNode(file.files[a].name);
+			var name = document.createTextNode(file.name);
 			
-			var obj =  URL.createObjectURL(file.files[a]);
+			var obj =  URL.createObjectURL(file);
+			
+			imgSrc.setAttribute('class', 'imgSty');
 			
 			music.appendChild(name);
-			
 			music.setAttribute('hreflang', obj);
-			
-		
-			
-			//link.appendChild(img);
-			//img.setAttribute('value', obj);
 			music.setAttribute('onclick', 'setAudio(this.hreflang)');
+			
 			music.style.cursor = "pointer";
+			tdImg.appendChild(imgSrc);
 			td.appendChild(music);
+			tr.appendChild(tdImg);
 			tr.appendChild(td);
 			playList.appendChild(tr);
-		}
+			
 	}
 
 	function showTags(url) {
-
+		
 		var tags = ID3.getAllTags(url);
+		
 		document.getElementById('title').textContent = tags.title || "";
 		document.getElementById('artist').textContent = tags.artist || "";
 		document.getElementById('album').textContent = tags.album || "";
@@ -116,14 +165,15 @@
 			}
 			var base64 = "data:" + image.format + ";base64,"
 					+ window.btoa(base64String);
+			
 			document.getElementById('picture').setAttribute('src', base64);
 
 		} else {
 			document.getElementById('picture').src = "images/album.jpg";
 		}
-
+		
 	}
-
+	
 	function playAudio() {
 
 		var music = document.getElementById('playerAudio');
@@ -163,7 +213,7 @@
 					<td><output style="color: white;" id="artist">unk</output></td>
 				</tr>
 				<tr>
-					<td><output style="color: white;">Title:</output></td>
+					<td><output style="color: white;">Album:</output></td>
 					<td><output style="color: white;" id="album">unk</output></td>
 				</tr>
 			</table>
@@ -208,7 +258,6 @@
 		<div id="playerControl"
 			style="width: 450px; height: 40px; background: black; position: relative; top: 100px;">
 
-
 			<button id="playButton" onclick="playAudio();">Play</button>
 			<button id="pauseButton" onclick="pauseAudio();">Pause</button>
 
@@ -218,9 +267,14 @@
 				step="0.01">
 		</div>
 	</div>
-	<div id="playList" style="width: 300px; height: 300px; padding: 150px;">
-	<table  id="playListTable"></table>
+	<div id="playList" style="width: 350px; height: 300px; padding: 150px;">
+	<div style="max-height: 300px; overflow: auto;">
+	<table id="playListTable" > </table>
 	</div>
-
+	</div>
+	
+	<div id="teste" style="width: 100px; height: 100px;">
+	
+	</div>
 </body>
 </html>
