@@ -88,7 +88,7 @@
 								tags : [ "title", "artist", "album", "picture" ],
 								dataReader : FileAPIReader(file)
 							});
-			createAudio(input.files[x], imgSrc);
+			createAudio(input.files[x], imgSrc,x);
 		}
 	}
 
@@ -98,12 +98,12 @@
 		sound.src = audio;
 	}
 
-	function createAudio(file, imgSrc) {
+	function createAudio(file, imgSrc,x) {
 		
 		var playList = document.getElementById('playList');
 
 		var tr = document.createElement('tr');
-
+		
 		var td = document.createElement('td');
 
 		var tdImg = document.createElement('td');
@@ -164,6 +164,8 @@
 	function playAudio() {
 
 		var music = document.getElementById('playerAudio');
+		
+		if(music.src != null && music.src != ""){
 		music.play();
 		var seek = document.getElementById('seekBar');
 		var fim = document.getElementById('fim');
@@ -171,7 +173,9 @@
 		var f = music.duration / 60;
 		fim.innerHTML =  f.toFixed(2);
 		updateSeek();
-		
+		document.getElementById('playImg').style.display = "none";
+		document.getElementById('pauseImg').style.display = "";
+		}
 	}
 	
 	function setTimeMusic(timer) {
@@ -199,8 +203,10 @@
 		var music = document.getElementById('playerAudio');
 
 		music.pause();
-
 		clearTempo();
+		document.getElementById('pauseImg').style.display = "none";
+		document.getElementById('playImg').style.display = "";
+		
 	}
 </script>
 </head>
@@ -217,24 +223,24 @@
 		style="position: fixed; z-index: -1; background: black; width: 50%; height: 65%; left: 0px; top: 20%">
 		<output style="color: white;"> Aqui vai o player</output>
 		
-		<div id="player">
+		<div id="player" style="width: 60%; height: 60%; border: 1px solid blue; top: 10%; position: relative; left: 10%;">
 			<audio id="playerAudio">
 			</audio>
+
+			<div id="playDiv">
 			
-			<div id="playDiv" >
-			
-			<button onclick="playAudio();">Play</button>
-			<button onclick="pauseAudio();" >Pause</button>
-			<output id="inicio" style="color: white;">  0:00  </output>
-			<input type="range" id="seekBar" value="0"  
-			onchange="setTimeMusic(this.value);" >
-<!-- 			<progress value="0" id="seekBar"></progress> -->
-			<output id="fim" style="color: white;"> 0:00
-			 </output>
-					
-				</div>
-		</div>
-		<img alt="" id="picture" src="images/album.jpg"
+				<img alt="" id="playImg" src="images/play.png " onclick="playAudio();"
+				style="width: 15%; height: 15%; cursor: pointer; " >
+				<img alt="" id="pauseImg" onclick="pauseAudio();" src="images/pause.png"
+				 style="width: 15%; height: 15%; display: none; cursor: pointer;">
+				<output id="inicio" style="color: white;"> 0:00 </output>
+				<input type="range" id="seekBar" value="0"
+					onchange="setTimeMusic(this.value);">
+				<!-- 			<progress value="0" id="seekBar"></progress> -->
+				<output id="fim" style="color: white;"> 0:00 </output>
+			</div>
+
+			<img alt="" id="picture" src="images/album.jpg"
 			style="width: 150px; height: 150px; background: white; top: 30px; position: relative; left: 30px; border-radius: 5px;">
 		<div id="infos" style="position: absolute; top: 10px; left: 200px;">
 			<table>
@@ -252,15 +258,23 @@
 				</tr>
 			</table>
 		</div>
+		</div>
+		
 	</section>
-	
+
 	<section
 		style="position: fixed; z-index: -1; background: black; width: 50%; height: 65%; left: 50%; top: 20%"">
-		<table id="playList" >
-			<tr>
-				<td colspan="2"><output style="color: white;"> Aqui vai a List</output></td>
-			</tr>
-		</table>
+
+		<div style="width: 100%; height: 10%;">
+			<output
+				style="color: white; font-size: 30px; font-family: Times New Roman, Times, serif;">Play
+				List</output>
+		</div>
+		<div style="overflow: auto; max-height: 70%;">
+			<table id="playList" >
+
+			</table>
+		</div>
 	</section>
 	<footer
 		style="position: fixed; bottom: 0px; width: 100%; height: 15%; background-color: black; left: 0px;">
