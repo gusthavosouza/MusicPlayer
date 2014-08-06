@@ -26,24 +26,33 @@
 	background: rgb(0, 0, 0);
 	height: 1px;
 }
+
 .imgSty {
-width: 60px;
-height: 60px;
-border-radius: 5%;
+	width: 60px;
+	height: 60px;
+	border-radius: 5%;
+	}
+
+.fixedHeader {
+	position: fixed;
+	width: 100%;
+	height: 20%;
+	background: black;
+	left: 0px;
+	top: 0px;
 }
 
 .musicStyle {
-display: inline-block;
-width: auto;
-max-width: 120px;
-font-size: 14px;
-font-weight: bold;
-text-overflow: ellipsis;
-white-space: nowrap;
-overflow: hidden;
-text-overflow: ellipsis;
+	display: inline-block;
+	width: auto;
+	max-width: 120px;
+	font-size: 14px;
+	font-weight: bold;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
-
 </style>
 <script src="jquery/jquery-1.11.1.js"></script>
 <script src="dist/id3-minimized.js" type="text/javascript"></script>
@@ -61,103 +70,82 @@ text-overflow: ellipsis;
 		tempo = setTimeout(efeitoMusic, 10);
 	}
 
+	function testando() {
+		var b = "algo";
+		return b;
+	}
+
 	function clearTempo() {
 		clearTimeout(tempo);
 	}
 
 	function loadFile(input) {
-		
-		for(var x = 0; x < input.files.length; x++){
-			
-		var file = input.files[x], url = file.urn || file.name;
-		
-		var imgSrc = document.createElement('img');
-		
-		ID3.loadTags(url, function() {
-			
-			var tags = ID3.getAllTags(url);
-			
-			document.getElementById('title').textContent = tags.title || "";
-			document.getElementById('artist').textContent = tags.artist || "";
-			document.getElementById('album').textContent = tags.album || "";
 
-			var image = tags.picture;
-			
-			if (image) {
-				var base64String = "";
-				for (var i = 0; i < image.data.length; i++) {
-					base64String += String.fromCharCode(image.data[i]);
-				}
-				var base64 = "data:" + image.format + ";base64,"
-						+ window.btoa(base64String);
-				
-				document.getElementById('picture').setAttribute('src', base64);
-				
-				imgSrc.src = base64;
+		for (var x = 0; x < input.files.length; x++) {
 
-			} else {
-				
-				imgSrc.src =  "images/album.jpg"; 
-				
-				document.getElementById('picture').src = "images/album.jpg";
-			}
-		}, {
-			tags : [ "title", "artist", "album", "picture" ],
-			dataReader : FileAPIReader(file)
-		});
-		
-		createAudio(input.files[x],imgSrc);
+			var file = input.files[x], url = file.urn || file.name;
+
+			var imgSrc = document.createElement('img');
+
+			ID3.loadTags(url, function(){ imgSrc.src = showTags(url) },
+							{
+								tags : [ "title", "artist", "album", "picture" ],
+								dataReader : FileAPIReader(file)
+							});
+			createAudio(input.files[x], imgSrc);
 		}
-		
 	}
-	
-	function setAudio(audio){
-		
-		var sound = document.getElementById('playerAudio');
-		sound.src =  audio;
-		
-	}
-	
-	function createAudio(file,imgSrc) {
 
-		var playList = document.getElementById('playListTable');
+	function setAudio(audio) {
+
+		var sound = document.getElementById('playerAudio');
+		sound.src = audio;
+	}
+
+	function createAudio(file, imgSrc) {
 		
-			var tr = document.createElement('tr');
-			
-			var td = document.createElement('td');
-			
-			var tdImg = document.createElement('td');
-			
-			var music = document.createElement("a");
-			
-			var name = document.createTextNode(file.name);
-			
-			var obj =  URL.createObjectURL(file);
-			
-			imgSrc.setAttribute('class', 'imgSty');
-			
-			music.appendChild(name);
-			music.setAttribute('hreflang', obj);
-			music.setAttribute('onclick', 'setAudio(this.hreflang)');
-			
-			music.style.cursor = "pointer";
-			tdImg.appendChild(imgSrc);
-			td.appendChild(music);
-			tr.appendChild(tdImg);
-			tr.appendChild(td);
-			playList.appendChild(tr);
-			
+		var playList = document.getElementById('playList');
+
+		var tr = document.createElement('tr');
+
+		var td = document.createElement('td');
+
+		var tdImg = document.createElement('td');
+		
+		var img = imgSrc;
+
+		var music = document.createElement("a");
+
+		var name = document.createTextNode(file.name);
+		
+		var obj = URL.createObjectURL(file);
+
+		img.setAttribute('class', 'imgSty');
+
+		music.appendChild(name);
+		music.setAttribute('hreflang', obj);
+		music.setAttribute('onclick', 'setAudio(this.hreflang)');
+
+		music.style.cursor = "pointer";
+		music.style.color ="white";
+		tdImg.appendChild(img);
+		td.appendChild(music);
+		tr.appendChild(tdImg);
+		tr.appendChild(td);
+		playList.appendChild(tr);
+
 	}
 
 	function showTags(url) {
-		
+
 		var tags = ID3.getAllTags(url);
-		
+
 		document.getElementById('title').textContent = tags.title || "";
 		document.getElementById('artist').textContent = tags.artist || "";
 		document.getElementById('album').textContent = tags.album || "";
 
 		var image = tags.picture;
+		var imgSrc = document.createElement('img');
 		if (image) {
 			var base64String = "";
 			for (var i = 0; i < image.data.length; i++) {
@@ -165,21 +153,20 @@ text-overflow: ellipsis;
 			}
 			var base64 = "data:" + image.format + ";base64,"
 					+ window.btoa(base64String);
-			
+			imgSrc.src = base64;
 			document.getElementById('picture').setAttribute('src', base64);
 
 		} else {
+			imgSrc.src = "images/album.jpg";
 			document.getElementById('picture').src = "images/album.jpg";
 		}
-		
+		return imgSrc.src;
 	}
-	
+
 	function playAudio() {
 
 		var music = document.getElementById('playerAudio');
-
 		music.play();
-
 		efeitoMusic();
 	}
 
@@ -194,8 +181,16 @@ text-overflow: ellipsis;
 </script>
 </head>
 <body>
-	<div id="playerFundo" class="fundoStyle"
-		style="width: 450px; height: 250px; border-radius: 10px;">
+	<header class="fixedHeader">
+	<nav>
+	<img alt=""	src="images/choose.png" style="width: 5%; height: 10%; cursor:pointer; position:fixed; left: 2%; top: 2%;"
+	onclick="document.getElementById('input').click();">
+	<input type="file" id="input" style="display: none;" onchange="loadFile(this);">
+	</nav>
+	 </header>
+	<section
+		style="position: fixed; z-index: -1; background: black; width: 50%; height: 65%; left: 0px; top: 20%">
+		<output style="color: white;"> Aqui vai o player</output>
 		<div id="player">
 			<audio id="playerAudio" autoplay="autoplay">
 			</audio>
@@ -218,63 +213,19 @@ text-overflow: ellipsis;
 				</tr>
 			</table>
 		</div>
-		<div id="efeitos" class="testeTrans"
-			style="width: 150px; position: absolute; height: 100px; top: 100px; left: 250px;">
-			<span id="efe1" class="anime"
-				style="width: 3px; position: absolute; top: 20px; left: 5px;">
-			</span> <span id="efe2" class="anime"
-				style="width: 3px; position: absolute; top: 20px; left: 15px;">
-			</span> <span id="efe3" class="anime"
-				style="width: 3px; position: absolute; top: 20px; left: 25px;">
-			</span> <span id="efe4" class="anime"
-				style="width: 3px; position: absolute; top: 20px; left: 35px;">
-			</span> <span id="efe5" class="anime"
-				style="width: 3px; position: absolute; top: 20px; left: 45px;">
-			</span> <span id="efe6" class="anime"
-				style="width: 3px; position: absolute; top: 20px; left: 55px;">
-			</span> <span id="efe7" class="anime"
-				style="width: 3px; position: absolute; top: 20px; left: 65px;">
-			</span> <span id="efe8" class="anime"
-				style="width: 3px; position: absolute; top: 20px; left: 75px;">
-			</span> <span id="efe9" class="anime"
-				style="width: 3px; position: absolute; top: 20px; left: 85px;">
-			</span> <span id="efe10" class="anime"
-				style="width: 3px; position: absolute; top: 20px; left: 95px;">
-			</span> <span id="efe11" class="anime"
-				style="width: 3px; position: absolute; top: 20px; left: 105px;">
-			</span> <span id="efe12" class="anime"
-				style="width: 3px; position: absolute; top: 20px; left: 115px;">
-			</span> <span id="efe13" class="anime"
-				style="width: 3px; position: absolute; top: 20px; left: 125px;">
-			</span>
-		</div>
-		<div id="chooseButton" style="position: relative; top: 40px;">
-			<img src="images/choose.png"
-				style="width: 50px; height: 50px; padding: 10px; cursor: pointer;"
-				onclick="document.getElementById('file').click();"> <input
-				type="file" id="file" style="display: none;"
-				onchange="loadFile(this);" multiple="multiple">
-		</div>
-		<div id="playerControl"
-			style="width: 450px; height: 40px; background: black; position: relative; top: 100px;">
-
-			<button id="playButton" onclick="playAudio();">Play</button>
-			<button id="pauseButton" onclick="pauseAudio();">Pause</button>
-
-			<input id="timeMusic" type="range">
-			<output id="volume" style="color: white;">Volume</output>
-			<input id="timeMusic" type="range" style="" value="1" max="1" min="0"
-				step="0.01">
-		</div>
-	</div>
-	<div id="playList" style="width: 350px; height: 300px; padding: 150px;">
-	<div style="max-height: 300px; overflow: auto;">
-	<table id="playListTable" > </table>
-	</div>
-	</div>
+	</section>
 	
-	<div id="teste" style="width: 100px; height: 100px;">
-	
-	</div>
+	<section
+		style="position: fixed; z-index: -1; background: black; width: 50%; height: 65%; left: 50%; top: 20%"">
+		<table id="playList" >
+			<tr>
+				<td colspan="2"><output style="color: white;"> Aqui vai a List</output></td>
+			</tr>
+		</table>
+	</section>
+	<footer
+		style="position: fixed; bottom: 0px; width: 100%; height: 15%; background-color: black; left: 0px;">
+	</footer>
+
 </body>
 </html>
