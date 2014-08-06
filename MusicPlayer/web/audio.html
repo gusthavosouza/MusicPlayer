@@ -59,6 +59,7 @@
 
 <script type="text/javascript">
 	var tempo;
+	
 	function efeitoMusic() {
 		var x = Math.floor((Math.random() * 80) + 1);
 		var d = Math.floor((Math.random() * 13) + 1);
@@ -68,11 +69,6 @@
 		//var c = Math.floor((Math.random() * 255) + 1);
 		//document.getElementById('efe'+d).style.backgroundColor = 'rgb(' +a +','+b+','+c+')';
 		tempo = setTimeout(efeitoMusic, 10);
-	}
-
-	function testando() {
-		var b = "algo";
-		return b;
 	}
 
 	function clearTempo() {
@@ -133,6 +129,8 @@
 		tr.appendChild(tdImg);
 		tr.appendChild(td);
 		playList.appendChild(tr);
+		
+		setAudio(obj);
 
 	}
 
@@ -167,7 +165,33 @@
 
 		var music = document.getElementById('playerAudio');
 		music.play();
-		efeitoMusic();
+		var seek = document.getElementById('seekBar');
+		var fim = document.getElementById('fim');
+		seek.max = music.duration;
+		var f = music.duration / 60;
+		fim.innerHTML =  f.toFixed(2);
+		updateSeek();
+		
+	}
+	
+	function setTimeMusic(timer) {
+		
+		var music = document.getElementById('playerAudio');
+		
+		music.currentTime = timer;
+		
+		updateSeek();
+	}
+	
+	function updateSeek(){
+		
+		var seek = document.getElementById('seekBar');
+		var music = document.getElementById('playerAudio');
+		var inicio = document.getElementById('inicio');
+		seek.value=  music.currentTime;
+		inicio.innerHTML =  music.currentTime.toFixed(2);
+		tempo = setTimeout(updateSeek, 10);
+		
 	}
 
 	function pauseAudio() {
@@ -183,17 +207,32 @@
 <body>
 	<header class="fixedHeader">
 	<nav>
-	<img alt=""	src="images/choose.png" style="width: 5%; height: 10%; cursor:pointer; position:fixed; left: 2%; top: 2%;"
+	<img alt=""	src="images/choose.png" style="width: 5%; height: 12%; cursor:pointer; position:fixed; left: 2%; top: 2%;"
 	onclick="document.getElementById('input').click();">
 	<input type="file" id="input" style="display: none;" onchange="loadFile(this);">
+	
 	</nav>
 	 </header>
 	<section
 		style="position: fixed; z-index: -1; background: black; width: 50%; height: 65%; left: 0px; top: 20%">
 		<output style="color: white;"> Aqui vai o player</output>
+		
 		<div id="player">
-			<audio id="playerAudio" autoplay="autoplay">
+			<audio id="playerAudio">
 			</audio>
+			
+			<div id="playDiv" >
+			
+			<button onclick="playAudio();">Play</button>
+			<button onclick="pauseAudio();" >Pause</button>
+			<output id="inicio" style="color: white;">  0:00  </output>
+			<input type="range" id="seekBar" value="0"  
+			onchange="setTimeMusic(this.value);" >
+<!-- 			<progress value="0" id="seekBar"></progress> -->
+			<output id="fim" style="color: white;"> 0:00
+			 </output>
+					
+				</div>
 		</div>
 		<img alt="" id="picture" src="images/album.jpg"
 			style="width: 150px; height: 150px; background: white; top: 30px; position: relative; left: 30px; border-radius: 5px;">
