@@ -4,22 +4,17 @@
 <meta charset="ISO-8859-1">
 <title>Insert title here</title>
 <style type="text/css">
-.fundoStyle {
-	background-color: rgba(55, 83, 105, 0.9);
-	background-image: -moz-radial-gradient(50% 44%, ellipse cover, rgba(55, 83, 105, 0.9),
-		#01101f 62%);
-	background-image: -webkit-radial-gradient(50% 44%, ellipse cover, rgba(55, 83, 105, 0.9),
-		#01101f 62%);
-	background-image: -o-radial-gradient(50% 44%, ellipse cover, rgba(55, 83, 105, 0.9),
-		#01101f 62%);
-	background-image: -ms-radial-gradient(50% 44%, ellipse cover, rgba(55, 83, 105, 0.9),
-		#01101f 62%);
-	background-image: radial-gradient(50% 44%, ellipse cover, rgba(55, 83, 105, 0.9),
-		#01101f 62%);
+
+.trStyle {
+border-bottom : 1px solid white;
 }
 
-.testeTrans {
-	transform: rotate(180deg);
+.control {
+ width: 15%;
+ height: 25%;
+ cursor: pointer;
+ position: absolute;
+ top: 70%;
 }
 
 .anime {
@@ -31,15 +26,24 @@
 	width: 60px;
 	height: 60px;
 	border-radius: 5%;
+	margin: 10% 10% 10% 10%;
 	}
 
 .fixedHeader {
 	position: fixed;
 	width: 100%;
 	height: 20%;
-	background: black;
+	box-shadow: 0px 11px 15px 0px rgba(0, 0, 0, 0.75);
+	background: #000000;
 	left: 0px;
 	top: 0px;
+}
+.spanSty {
+	width: 5px;
+	max-height:100%;
+	height:0%;
+ 	background: white;
+    position: absolute;
 }
 
 .musicStyle {
@@ -61,14 +65,36 @@
 	var tempo;
 	
 	function efeitoMusic() {
-		var x = Math.floor((Math.random() * 80) + 1);
-		var d = Math.floor((Math.random() * 13) + 1);
-		document.getElementById('efe' + d).style.height = x + "px";
-		//	var a = Math.floor((Math.random() * 255) + 1);
-		//var b = Math.floor((Math.random() * 255) + 1);
-		//var c = Math.floor((Math.random() * 255) + 1);
-		//document.getElementById('efe'+d).style.backgroundColor = 'rgb(' +a +','+b+','+c+')';
-		tempo = setTimeout(efeitoMusic, 10);
+		
+		var footer = document.getElementById('spanFooter');
+		
+		for(var sp = 0; sp < 100; sp++){
+			
+			var span = document.createElement('span');
+			span.setAttribute('class', 'spanSty');
+			span.style.left = sp+"%";
+			span.id = "span"+sp;
+			footer.appendChild(span);
+		}
+		setSpanHe();
+	}
+	
+	function setSpanHe(){
+		
+		var color = ["#50D7F0","#11292E","#11292E","#FFFFFF","#B8D4DA","#232525","#232525","#445457","#647B80","#50D7F0"];
+		
+		for(var x =0; x < 100; x++){
+			var random = Math.floor((Math.random()* 100) +1);
+			var randColor = Math.floor((Math.random()*10)+1);
+			
+			var span = document.getElementById('span'+x);
+			
+			span.style.background=  color[randColor];
+			
+			span.style.height = random+"%";
+		}
+		
+		tempo = setTimeout(setSpanHe,70);
 	}
 
 	function clearTempo() {
@@ -117,6 +143,11 @@
 		var obj = URL.createObjectURL(file);
 
 		img.setAttribute('class', 'imgSty');
+		tr.setAttribute('class', 'trStyle');
+		td.setAttribute('class', 'trStyle');
+		tdImg.setAttribute('class', 'trStyle');
+		music.style.margin = "5% 5%";
+		music.style.display = "inline-block";
 
 		music.appendChild(name);
 		music.setAttribute('hreflang', obj);
@@ -175,38 +206,40 @@
 		updateSeek();
 		document.getElementById('playImg').style.display = "none";
 		document.getElementById('pauseImg').style.display = "";
+		efeitoMusic()
 		}
 	}
 	
 	function setTimeMusic(timer) {
 		
 		var music = document.getElementById('playerAudio');
-		
 		music.currentTime = timer;
+		var inicio = document.getElementById('inicio');
+		inicio.innerHTML = timer;
 		
-		updateSeek();
+		//updateSeek();
 	}
 	
-	function updateSeek(){
-		
+	
+	function updateSeek() {
+
 		var seek = document.getElementById('seekBar');
 		var music = document.getElementById('playerAudio');
 		var inicio = document.getElementById('inicio');
-		seek.value=  music.currentTime;
-		inicio.innerHTML =  music.currentTime.toFixed(2);
+		seek.value = music.currentTime;
+		inicio.innerHTML = music.currentTime.toFixed(2);
 		tempo = setTimeout(updateSeek, 10);
-		
+
 	}
 
 	function pauseAudio() {
 
 		var music = document.getElementById('playerAudio');
-
 		music.pause();
 		clearTempo();
 		document.getElementById('pauseImg').style.display = "none";
 		document.getElementById('playImg').style.display = "";
-		
+
 	}
 </script>
 </head>
@@ -220,31 +253,35 @@
 	</nav>
 	 </header>
 	<section
-		style="position: fixed; z-index: -1; background: black; width: 50%; height: 65%; left: 0px; top: 20%">
-		<output style="color: white;"> Aqui vai o player</output>
+		style="position: fixed; z-index: -1; background:#0E1012 ; width: 50%; height: 65%; left: 0px; top: 20%">
+		<output style="color:#59AEEA;"> Aqui vai o player</output>
 		
-		<div id="player" style="width: 60%; height: 60%; border: 1px solid blue; top: 10%; position: relative; left: 10%;">
+		<div id="player" style="width: 60%; height: 60%; border: 1px solid #59AEEA; top: 10%; position: relative; left: 10%;">
 			<audio id="playerAudio">
 			</audio>
 
 			<div id="playDiv">
+				
+		<img alt="" id="picture" src="images/album.jpg"	style="width:30%; height: 45%; top: 
+		10%; position: absolute; left: 5%; border-radius: 5px;">
 			
-				<img alt="" id="playImg" src="images/play.png " onclick="playAudio();"
-				style="width: 15%; height: 15%; cursor: pointer; " >
-				<img alt="" id="pauseImg" onclick="pauseAudio();" src="images/pause.png"
-				 style="width: 15%; height: 15%; display: none; cursor: pointer;">
-				<output id="inicio" style="color: white;"> 0:00 </output>
-				<input type="range" id="seekBar" value="0"
-					onchange="setTimeMusic(this.value);">
-				<!-- 			<progress value="0" id="seekBar"></progress> -->
-				<output id="fim" style="color: white;"> 0:00 </output>
+				<img alt="" id="playImg" src="images/play.png " onclick="playAudio();" class="control">
+				<img alt="" id="pauseImg" onclick="pauseAudio();" src="images/pause.png" class="control"
+				 style="display: none;">
+
+				<div id="controlLine" style="position: absolute; top: 78%; left: 15%;">
+					<output id="inicio" style="color: #59AEEA;"> 0:00 </output>
+					<input type="range" id="seekBar" value="0"
+						onchange="setTimeMusic(this.value);" >
+					<!-- 			<progress value="0" id="seekBar"></progress> -->
+					<output id="fim" style="color: #59AEEA;"> 0:00 </output>
+				</div>
+
 			</div>
 
-			<img alt="" id="picture" src="images/album.jpg"
-			style="width: 150px; height: 150px; background: white; top: 30px; position: relative; left: 30px; border-radius: 5px;">
 		<div id="infos" style="position: absolute; top: 10px; left: 200px;">
-			<table>
-				<tr>
+			<table >
+				<tr >
 					<td><output style="color: white;">Title:</output></td>
 					<td><output style="color: white;" id="title">unk</output></td>
 				</tr>
@@ -252,7 +289,7 @@
 					<td><output style="color: white;">Artist:</output></td>
 					<td><output style="color: white;" id="artist">unk</output></td>
 				</tr>
-				<tr>
+				<tr >
 					<td><output style="color: white;">Album:</output></td>
 					<td><output style="color: white;" id="album">unk</output></td>
 				</tr>
@@ -263,21 +300,22 @@
 	</section>
 
 	<section
-		style="position: fixed; z-index: -1; background: black; width: 50%; height: 65%; left: 50%; top: 20%"">
+		style="position: fixed; z-index: -1; background: #0E1012; width: 50%; height: 65%; left: 50%; top: 20%">
 
 		<div style="width: 100%; height: 10%;">
 			<output
-				style="color: white; font-size: 30px; font-family: Times New Roman, Times, serif;">Play
+				style="color: #59AEEA; font-size: 30px; font-family: Times New Roman, Times, serif;">Play
 				List</output>
 		</div>
 		<div style="overflow: auto; max-height: 70%;">
-			<table id="playList" >
-
+			<table id="playList" style="border-collapse: collapse; border: 1px solid white;" >
 			</table>
 		</div>
 	</section>
-	<footer
-		style="position: fixed; bottom: 0px; width: 100%; height: 15%; background-color: black; left: 0px;">
+	<footer	id="footer" style="position:fixed; box-shadow: 0px -11px 20px 0px rgba(0, 0, 0, 0.85); bottom: 0px; width: 100%; height: 15%; background-color: #000000; left: 0px;" >
+	
+	<div id="spanFooter" style="transform: rotate(180deg); width: 100%; height: 100%; position: absolute;"></div>
+	
 	</footer>
 
 </body>
