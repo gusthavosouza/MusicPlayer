@@ -61,20 +61,37 @@ input[type=range] {
     -webkit-appearance: none;
     background-color: #2b4254 ;
     width: 280px;
-    height:10px;
+    height:8px;
    border-radius: 10px 10px 10px 10px;
    border: 1px solid #10171D;
  	box-shadow: inset 0px 0px 1px 1px rgba(0, 0, 0, 0.9), 0px 1px 1px 0px rgba(255, 255, 255, 0.13);
+	position: absolute;
+	top: 2.5px;
+	left: 2%;
     }
+    
     
     input[type="range"]::-webkit-slider-thumb {
      -webkit-appearance: none;
-    background-color: #000000;
+    background-color: #2b4254;
     opacity: 1; 
     width: 12px;
     height: 12px;
     border-radius:50%;
-    background:radial-gradient(ellipse at center, rgba(255,255,255,1) 0%, rgba(45,45,45,1) 82%, rgba(0,0,0,1) 100%);
+    background:radial-gradient(ellipse at center, rgba(255,255,255,1) 0%, rgba(43, 66, 84, 1) 82%, rgba(43, 66, 84, 1) 100%);
+}
+
+.spanLine{
+background: #10171D;
+width: 22%;
+height: 3%;
+position: fixed;
+top: 61%;
+ left: 12%;
+border-radius: 10px 10px 10px 10px;
+background: #10171D;
+box-shadow: inset 8px 6px 20px -3px rgba(0,0,0,0.75);
+border: 1px solid black;
 }
 </style>
 <script src="jquery/jquery-1.11.1.js"></script>
@@ -275,7 +292,7 @@ input[type=range] {
 		style="position: fixed; z-index: -1; background:#0E1012 ; width: 50%; height: 65%; left: 0px; top: 20%">
 		<output style="color:#59AEEA;"> Aqui vai o player</output>
 		
-		<div id="player" style="width: 60%; height: 60%; border: 1px solid #59AEEA; top: 10%; position: relative; left: 10%;">
+		<div id="player" style="width: 60%; height: 60%; top: 10%; position: relative; left: 10%;">
 			<audio id="playerAudio">
 			</audio>
 
@@ -287,16 +304,15 @@ input[type=range] {
 				<img alt="" id="playImg" src="images/play.png " onclick="playAudio();" class="control">
 				<img alt="" id="pauseImg" onclick="pauseAudio();" src="images/pause.png" class="control"
 				 style="display: none;">
-
-				<div id="controlLine" style="position: absolute; top: 78%; left: 15%;">
-					<output id="inicio" style="color: #59AEEA;"> 0:00 </output>
+			
+			
+					<div id="spanLine" class="spanLine">
+					<output id="inicio" style="color: #59AEEA; position: absolute; left: -10%;"> 0:00 </output>
 					<input type="range" id="seekBar" value="0"
 						onchange="setTimeMusic(this.value);" >
-					<!-- 			<progress value="0" id="seekBar"></progress> -->
-					<output id="fim" style="color: #59AEEA;"> 0:00 </output>
+						<output id="fim" style="color: #59AEEA; position: absolute; left: 102%;" > 0:00 </output>
+						</div>
 				</div>
-
-			</div>
 
 		<div id="infos" style="position: absolute; top: 10px; left: 200px;">
 			<table >
