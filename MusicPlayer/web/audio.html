@@ -7,6 +7,7 @@
 
 .trStyle {
 border-bottom : 1px solid white;
+background: #070A0C;
 }
 
 .control {
@@ -23,10 +24,9 @@ border-bottom : 1px solid white;
 }
 
 .imgSty {
-	width: 60px;
-	height: 60px;
+	width: 40%;
+	height: 80%;
 	border-radius: 5%;
-	margin: 10% 10% 10% 10%;
 	}
 
 .fixedHeader {
@@ -62,14 +62,14 @@ input[type=range] {
     background-color: #2b4254 ;
     width: 280px;
     height:8px;
-   border-radius: 10px 10px 10px 10px;
-   border: 1px solid #10171D;
+  	 border-radius: 10px 10px 10px 10px;
+   	border: 1px solid #10171D;
+   	position:absolute;
  	box-shadow: inset 0px 0px 1px 1px rgba(0, 0, 0, 0.9), 0px 1px 1px 0px rgba(255, 255, 255, 0.13);
 	position: absolute;
 	top: 2.5px;
 	left: 2%;
     }
-    
     
     input[type="range"]::-webkit-slider-thumb {
      -webkit-appearance: none;
@@ -93,6 +93,19 @@ background: #10171D;
 box-shadow: inset 8px 6px 20px -3px rgba(0,0,0,0.75);
 border: 1px solid black;
 }
+
+.musicDiv {
+ width: 45%; 
+ height: 50%;  
+ float: left; 
+ margin: 5px;
+
+}
+
+.test {
+text-align:center;
+}
+
 </style>
 <script src="jquery/jquery-1.11.1.js"></script>
 <script src="dist/id3-minimized.js" type="text/javascript"></script>
@@ -140,62 +153,60 @@ border: 1px solid black;
 	function loadFile(input) {
 
 		for (var x = 0; x < input.files.length; x++) {
-
-			var file = input.files[x], url = file.urn || file.name;
-
-			var imgSrc = document.createElement('img');
-
-			ID3.loadTags(url, function(){ imgSrc.src = showTags(url) },
-							{
-								tags : [ "title", "artist", "album", "picture" ],
-								dataReader : FileAPIReader(file)
-							});
-			createAudio(input.files[x], imgSrc,x);
+			loadFileTwo(input.files[x]);
 		}
 	}
 
+	function loadFileTwo(input){
+		
+		var file = input, url = file.urn || file.name;
+
+		var imgSrc = document.createElement('img');
+
+		ID3.loadTags(url, function(){ imgSrc.src = showTags(url) },
+						{
+							tags : [ "title", "artist", "album", "picture" ],
+							dataReader : FileAPIReader(file)
+						});
+		createAudio(input, imgSrc);
+	}
+	
 	function setAudio(audio) {
 
 		var sound = document.getElementById('playerAudio');
 		sound.src = audio;
 	}
 
-	function createAudio(file, imgSrc,x) {
+	function createAudio(file, imgSrc) {
 		
 		var playList = document.getElementById('playList');
 
-		var tr = document.createElement('tr');
-		
-		var td = document.createElement('td');
-
-		var tdImg = document.createElement('td');
-		
+		var div = document.createElement('div');
+		var div2 = document.createElement('div');
+		div2.setAttribute('class' , 'test');
 		var img = imgSrc;
 
 		var music = document.createElement("a");
-
+		var linha = document.createElement("br");
 		var name = document.createTextNode(file.name);
 		
 		var obj = URL.createObjectURL(file);
 
 		img.setAttribute('class', 'imgSty');
-		tr.setAttribute('class', 'trStyle');
-		td.setAttribute('class', 'trStyle');
-		tdImg.setAttribute('class', 'trStyle');
 		music.style.margin = "5% 5%";
-		music.style.display = "inline-block";
-
+		music.style.display = "block";
 		music.appendChild(name);
+		music.appendChild(linha);
+		music.appendChild(img);
 		music.setAttribute('hreflang', obj);
 		music.setAttribute('onclick', 'setAudio(this.hreflang)');
 
 		music.style.cursor = "pointer";
 		music.style.color ="white";
-		tdImg.appendChild(img);
-		td.appendChild(music);
-		tr.appendChild(tdImg);
-		tr.appendChild(td);
-		playList.appendChild(tr);
+		div.setAttribute('class', 'musicDiv');
+		div.appendChild(music);
+		div2.appendChild(div);
+		playList.appendChild(div2);
 		
 		setAudio(obj);
 
@@ -252,8 +263,7 @@ border: 1px solid black;
 		music.currentTime = timer;
 		var inicio = document.getElementById('inicio');
 		inicio.innerHTML = timer;
-		
-		//updateSeek();
+		updateSeek();
 	}
 	
 	
@@ -277,6 +287,12 @@ border: 1px solid black;
 		document.getElementById('playImg').style.display = "";
 
 	}
+	
+	function clearTime() {
+		
+		clearTimeout(tempo);
+		
+	}
 </script>
 </head>
 <body>
@@ -284,7 +300,7 @@ border: 1px solid black;
 	<nav>
 	<img alt=""	src="images/choose.png" style="width: 5%; height: 12%; cursor:pointer; position:fixed; left: 2%; top: 2%;"
 	onclick="document.getElementById('input').click();">
-	<input type="file" id="input" style="display: none;" onchange="loadFile(this);">
+	<input type="file" id="input" style="display: none;" onchange="loadFile(this);" multiple="multiple">
 	
 	</nav>
 	 </header>
@@ -305,11 +321,10 @@ border: 1px solid black;
 				<img alt="" id="pauseImg" onclick="pauseAudio();" src="images/pause.png" class="control"
 				 style="display: none;">
 			
-			
 					<div id="spanLine" class="spanLine">
-					<output id="inicio" style="color: #59AEEA; position: absolute; left: -10%;"> 0:00 </output>
+					<output id="inicio" style="color: #59AEEA; left: -13%; position: absolute;" > 0:00 </output>
 					<input type="range" id="seekBar" value="0"
-						onchange="setTimeMusic(this.value);" >
+						onchange="setTimeMusic(this.value);" onmousedown="clearTime();"> 
 						<output id="fim" style="color: #59AEEA; position: absolute; left: 102%;" > 0:00 </output>
 						</div>
 				</div>
@@ -333,19 +348,25 @@ border: 1px solid black;
 		</div>
 		
 	</section>
-
+	
 	<section
-		style="position: fixed; z-index: -1; background: #0E1012; width: 50%; height: 65%; left: 50%; top: 20%">
+		style="position: fixed; z-index: -1; background: #0E1012; width: 50%; height: 65%; left: 50%; top: 20%" >
 
 		<div style="width: 100%; height: 10%;">
 			<output
 				style="color: #59AEEA; font-size: 30px; font-family: Times New Roman, Times, serif;">Play
 				List</output>
 		</div>
-		<div style="overflow: auto; max-height: 70%;">
-			<table id="playList" style="border-collapse: collapse; border: 1px solid white;" >
-			</table>
+		
+		<div id="playList" style="width: 90%; height: 80%; background: blue;max-width: 100%; max-height: 90%; overflow: auto;" >
+		
+<!-- 			<div style="background: white; width: 45%; height: 50%;  float: left; margin: 5px;"></div> -->
+						
+						
+						
+							
 		</div>
+		
 	</section>
 	<footer	id="footer" style="position:fixed; box-shadow: 0px -11px 20px 0px rgba(0, 0, 0, 0.85); bottom: 0px; width: 100%; height: 15%; background-color: #000000; left: 0px;" >
 	
