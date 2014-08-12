@@ -94,9 +94,16 @@ box-shadow: inset 8px 6px 20px -3px rgba(0,0,0,0.75);
 border: 1px solid black;
 }
 
+div.musicDiv:hover{
+background: #1D1F20;
+}
+
+
 .musicDiv {
  width: 40%; 
  height: 50%;  
+ max-height:50%;
+ max-width:40%;
  float: left; 
  margin: 5px;
  background: #070A0C;
@@ -104,7 +111,6 @@ border: 1px solid black;
 
 .divCenter {
 text-align:center;
-
 }
 
 </style>
@@ -172,24 +178,59 @@ text-align:center;
 						});
 	}
 	
-	function setAudio(audio) {
+	function setAudio(aLink) {
 
 		var sound = document.getElementById('playerAudio');
-		sound.src = audio;
+		sound.src = aLink.hreflang;
+		
+		var img = document.createElement('img');
+		 img = aLink.getElementsByTagName("img")[0];
+		 
+		 var picture = document.getElementById('picture');
+		picture.src = img.src;
+			
+		var title = document.getElementById('title');
+		title.textContent = aLink.getElementsByTagName("output")[0].textContent;
+		
+		var artist = document.getElementById('artist');
+		artist.textContent = aLink.getElementsByTagName("output")[1].textContent;
+		
+		var album = document.getElementById('album');
+		album.textContent = aLink.getElementsByTagName("output")[2].textContent;
+		
+		
+		//document.getElementById('title').innerHTML = title;
+		//document.getElementById('artist').textContent = artist;
+		//document.getElementById('album').textContent = album;
+		//document.getElementByID('picture').setAttribute('src', img.src);
+		
+		
 	}
 
-	function createAudio(file, imgSrc,name , title , album) {
+	function createAudio(file, imgSrc, title , artist , album) {
 		
 		var playList = document.getElementById('playList');
-
 		var div = document.createElement('div');
 		var div2 = document.createElement('div');
 		div2.setAttribute('class' , 'divCenter');
 		var img = imgSrc;
+		
+		var artistOut = document.createElement('output');
+		var albumOut = document.createElement('output');
+		var titleOut = document.createElement('output');
+		
+		artistOut.textContent = artist;
+		albumOut.textContent = album;
+		titleOut.textContent = title;
+		artistOut.style.display = "none";
+		albumOut.style.display =  "none";
+		titleOut.style.display = "none";
 
 		var music = document.createElement("a");
+		
 		var linha = document.createElement("br");
-		var name = document.createTextNode(name);
+		
+		var name = document.createTextNode(title);
 		
 		var obj = URL.createObjectURL(file);
 
@@ -199,27 +240,28 @@ text-align:center;
 		music.appendChild(name);
 		music.appendChild(linha);
 		music.appendChild(img);
+		music.appendChild(artistOut);
+		music.appendChild(albumOut);
+		music.appendChild(titleOut);
+		
 		music.setAttribute('hreflang', obj);
-		music.setAttribute('onclick', 'setAudio(this.hreflang)');
-
+		music.setAttribute('onclick', 'setAudio(this)');
 		music.style.cursor = "pointer";
-		music.style.color ="white";
+		music.style.color = "white";
 		div.setAttribute('class', 'musicDiv');
 		div.appendChild(music);
 		div2.appendChild(div);
 		playList.appendChild(div2);
 		
-		setAudio(obj);
-
 	}
 
 	function showTags(url) {
 
 		var tags = ID3.getAllTags(url);
 
-		document.getElementById('title').textContent = tags.title || "";
-		document.getElementById('artist').textContent = tags.artist || "";
-		document.getElementById('album').textContent = tags.album || "";
+		//document.getElementById('title').textContent = tags.title || "";
+		//document.getElementById('artist').textContent = tags.artist || "";
+		//document.getElementById('album').textContent = tags.album || "";
 		
 		var title = tags.title;
 		var artist = tags.artist;
@@ -235,11 +277,14 @@ text-align:center;
 			var base64 = "data:" + image.format + ";base64,"
 					+ window.btoa(base64String);
 			imgSrc.src = base64;
-			document.getElementById('picture').setAttribute('src', base64);
+			
+			//document.getElementById('picture').setAttribute('src', base64);
 
 		} else {
 			imgSrc.src = "images/album.jpg";
-			document.getElementById('picture').src = "images/album.jpg";
+			
+			//document.getElementById('picture').src = "images/album.jpg";
+			
 		}
 		return {imagem: imgSrc, title: title, artist: artist,album: album};
 	}
@@ -364,8 +409,6 @@ text-align:center;
 		</div>
 		
 		<div id="playList" style="width: 90%; height: 80%;max-width: 100%; max-height: 90%; overflow: auto;" >
-		
-							
 		</div>
 		
 	</section>
