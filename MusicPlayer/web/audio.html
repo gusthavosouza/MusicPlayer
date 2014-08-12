@@ -24,8 +24,8 @@ background: #070A0C;
 }
 
 .imgSty {
-	width: 40%;
-	height: 80%;
+	width: 50%;
+	height:100%;
 	border-radius: 5%;
 	}
 
@@ -95,15 +95,16 @@ border: 1px solid black;
 }
 
 .musicDiv {
- width: 45%; 
+ width: 40%; 
  height: 50%;  
  float: left; 
  margin: 5px;
-
+ background: #070A0C;
 }
 
-.test {
+.divCenter {
 text-align:center;
+
 }
 
 </style>
@@ -160,15 +161,15 @@ text-align:center;
 	function loadFileTwo(input){
 		
 		var file = input, url = file.urn || file.name;
-
-		var imgSrc = document.createElement('img');
-
-		ID3.loadTags(url, function(){ imgSrc.src = showTags(url) },
+		
+		 var retornoVal;
+		ID3.loadTags(url, function(){retornoVal = showTags(url);
+						createAudio(input, retornoVal.imagem, retornoVal.title , retornoVal.artist , retornoVal.album);
+						},
 						{
 							tags : [ "title", "artist", "album", "picture" ],
 							dataReader : FileAPIReader(file)
 						});
-		createAudio(input, imgSrc);
 	}
 	
 	function setAudio(audio) {
@@ -177,18 +178,18 @@ text-align:center;
 		sound.src = audio;
 	}
 
-	function createAudio(file, imgSrc) {
+	function createAudio(file, imgSrc,name , title , album) {
 		
 		var playList = document.getElementById('playList');
 
 		var div = document.createElement('div');
 		var div2 = document.createElement('div');
-		div2.setAttribute('class' , 'test');
+		div2.setAttribute('class' , 'divCenter');
 		var img = imgSrc;
 
 		var music = document.createElement("a");
 		var linha = document.createElement("br");
-		var name = document.createTextNode(file.name);
+		var name = document.createTextNode(name);
 		
 		var obj = URL.createObjectURL(file);
 
@@ -219,6 +220,10 @@ text-align:center;
 		document.getElementById('title').textContent = tags.title || "";
 		document.getElementById('artist').textContent = tags.artist || "";
 		document.getElementById('album').textContent = tags.album || "";
+		
+		var title = tags.title;
+		var artist = tags.artist;
+		var album = tags.album;
 
 		var image = tags.picture;
 		var imgSrc = document.createElement('img');
@@ -236,7 +241,7 @@ text-align:center;
 			imgSrc.src = "images/album.jpg";
 			document.getElementById('picture').src = "images/album.jpg";
 		}
-		return imgSrc.src;
+		return {imagem: imgSrc, title: title, artist: artist,album: album};
 	}
 
 	function playAudio() {
@@ -358,12 +363,8 @@ text-align:center;
 				List</output>
 		</div>
 		
-		<div id="playList" style="width: 90%; height: 80%; background: blue;max-width: 100%; max-height: 90%; overflow: auto;" >
+		<div id="playList" style="width: 90%; height: 80%;max-width: 100%; max-height: 90%; overflow: auto;" >
 		
-<!-- 			<div style="background: white; width: 45%; height: 50%;  float: left; margin: 5px;"></div> -->
-						
-						
-						
 							
 		</div>
 		
